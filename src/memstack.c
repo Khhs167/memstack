@@ -15,6 +15,7 @@ struct memstack_chain_ptr_t{
 typedef struct memstack_chain_ptr_t memstack_chain_ptr;
 
 memstack_chain_ptr* first = { NULL };
+memstack_chain_ptr* last = NULL;
 
 memstack_chain_ptr* get_item_list(memstack_chain_ptr* c){
     if(c->next == NULL)
@@ -26,14 +27,16 @@ void msinit(){
     first = malloc(sizeof(memstack_chain_ptr));
     first->ptr = NULL;
     first->next = NULL;
+    last = first;
 }
 
 void* msalloc(int size){
     memstack_chain_ptr* p = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
     p->ptr = malloc(size);
     p->next = NULL;
-    memstack_chain_ptr* c = get_item_list(first);
+    memstack_chain_ptr* c = last;
     c->next = p;
+    last = p;
     return p->ptr;
 }
 
