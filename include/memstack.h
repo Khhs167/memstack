@@ -26,9 +26,5 @@ extern memstack* new_memstack();  // Creates a new memstack
 extern void* msalloc(memstack* storage, int size);  // Allocate onto memstack and return pointer
 extern void msfree(memstack* storage);  // Free all of memstack
 
-// Legacy functions
-//extern void msinit();
-//extern void* msalloc(int size);
-//extern void msfree();
 
 #endif
