@@ -2,10 +2,12 @@
 A basic linked-list based tool for managing memory
 
 ## Installation
+
+It can be installed via the AUR(`yay -S libmemstack-git` i.e) or via Makefile as shown below
 ```
 sudo make install
 ```
-And to remove
+And to remove(with makefile)
 ```
 sudo make uninstall
 ```
