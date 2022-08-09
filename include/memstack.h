@@ -7,6 +7,16 @@
 #ifndef MC_MEMSTACK_H
 #define MC_MEMSTACK_H
 
+#include <stdlib.h>
+#include <stdio.h>
+
+// C macro to improve readability when using the library.
+// Example:
+// Before: msfree(NULL);  // Does not explicitly show global is being freed
+// After: msfree(GLOBAL_MEMSTACK);  // Does show global is being freed
+// It isn't necessary to use this however, and using NULL will also work.
+#define GLOBAL_MEMSTACK NULL
+
 // Linked list node.
 // Stores a ptr to the memory allocated and the next element in the linked list.
 // If *next* is NULL then that node is the last node in the linked list.
