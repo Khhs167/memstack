@@ -49,9 +49,11 @@ memstack* msnew() {
 // Allocates a new node onto the memstack chain and allocates the space of parameter "size" for the user.
 void* msalloc(memstack* storage, int size) {
     if(storage == GLOBAL_MEMSTACK) {
+        // Ensure global is initialised before allocating
         if (global != NULL) {
             return msalloc(global, size);
         } else {
+            // if not initialised, msalloc() now calls msinit() for the user
             msinit();
             return msalloc(global, size);
         }
@@ -86,11 +88,14 @@ void free_node(memstack_chain_ptr* node){
 // Frees all the nodes stored within the memstack and frees the memstack itself.
 void msfree(memstack* storage) {
     if (storage == GLOBAL_MEMSTACK) {
+        // Ensure global is not NULL before freeing
+        // This is because we dereference global (so we don't want it to be NULL)
         if (global != NULL) {
             free_node(global->first);
             free(global);
         }
     } else {
+        // If it's not NULL we can free it normally
         free_node(storage->first);
         free(storage);
     }
