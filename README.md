@@ -10,7 +10,7 @@ And to remove
 sudo make uninstall
 ```
 
-This library has 3 functions, `msnew`, `msalloc` and `msfree`.
+This library has 4 functions, `msnew`, `msalloc`, `msfree` and the legacy function `msinit`.
 When you want to create a memstack (for storing all allocations so they can later be freed at once), use the function `msnew()` which returns a `memstack` pointer. You can use `msalloc(memstack*, int)` to allocate new memory through the memstack, this function will return a pointer to the memory you've allocated. Once you're all ton with the memory, you can free it all at once using `msfree(memstack*)`!
 
 ## Compiling something
@@ -38,5 +38,33 @@ int main(){
   printf("A: %i\n", *a); // Now it should give us "A: 11"
   
   msfree(ms); // Free it all. 
+}
+```
+
+## Legcacy example
+```c
+// example.c
+// Compile with "gcc example.c -lmemstack -o example" and run with "./example"
+
+#include <stdio.h>
+#include <memstack.h>
+#include <stdlib.h>
+
+void inc(int* v){
+  *v = *v + 1;
+}
+
+int main(){
+  msinit() // Create a global memstack
+  // Note that unlike the above example, we pass NULL instead of a memstack, that accesses the global
+  // Memstack.
+  
+  int* a = msalloc(NULL, sizeof(int)); // Create an int pointer
+  *a = 10; // Lets set it to 10
+  printf("A: %i\n", *a); // Print the value(should give us "A: 10"
+  inc(a); // Increase it
+  printf("A: %i\n", *a); // Now it should give us "A: 11"
+  
+  msfree(NULL); // Free it all. 
 }
 ```
