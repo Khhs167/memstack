@@ -10,7 +10,7 @@
 // Creates a new memstack.
 // Allocates a new memstack and the first node within the memstack chain.
 // The memstack is used to manage a memstack chain within a local scope.
-memstack* new_memstack() {
+memstack* msnew() {
     // Allocate new memstack and the first memstack chain pointer.
     memstack* ms = (memstack*)malloc(sizeof(memstack));
     ms->first = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));

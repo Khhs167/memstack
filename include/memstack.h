@@ -22,7 +22,7 @@ typedef struct memstack_t {
     memstack_chain_ptr* first;  // Stores first element
 } memstack;
 
-extern memstack* new_memstack();  // Creates a new memstack
+extern memstack* msnew();  // Creates a new memstack
 extern void* msalloc(memstack* storage, int size);  // Allocate onto memstack and return pointer
 extern void msfree(memstack* storage);  // Free all of memstack
 
