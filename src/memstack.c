@@ -7,6 +7,12 @@
 #include <memstack.h>
 #include <stdlib.h>
 
+memstack* global;
+
+void msinit(){
+    global = msnew();
+}
+
 // Creates a new memstack.
 // Allocates a new memstack and the first node within the memstack chain.
 // The memstack is used to manage a memstack chain within a local scope.
@@ -28,7 +34,8 @@ memstack* msnew() {
 
 // Allocates a new node onto the memstack chain and allocates the space of parameter "size" for the user.
 void* msalloc(memstack* storage, int size) {
-
+    if(storage == NULL)
+        return msalloc(global, size);
     // Create new node to add to the linked list.
     memstack_chain_ptr* new_node = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
     new_node->ptr = malloc(size);  // Allocate space user requested.
@@ -58,6 +65,8 @@ void free_node(memstack_chain_ptr* node){
 
 // Frees all the nodes stored within the memstack and frees the memstack itself.
 void msfree(memstack* storage) {
+    if(storage == NULL)
+        msfree(global);
     free_node(storage->first);
     free(storage);
 }

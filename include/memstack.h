@@ -22,6 +22,7 @@ typedef struct memstack_t {
     memstack_chain_ptr* first;  // Stores first element
 } memstack;
 
+extern void msinit(); // Initializes a global memstack, that can be accessed by passing in "NULL" as storage in the other funcs
 extern memstack* msnew();  // Creates a new memstack
 extern void* msalloc(memstack* storage, int size);  // Allocate onto memstack and return pointer
 extern void msfree(memstack* storage);  // Free all of memstack
