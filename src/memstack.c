@@ -7,47 +7,57 @@
 #include <memstack.h>
 #include <stdlib.h>
 
-struct memstack_chain_ptr_t{
-    void* ptr;
-    struct memstack_chain_ptr_t* next;
-};
+// Creates a new memstack.
+// Allocates a new memstack and the first node within the memstack chain.
+// The memstack is used to manage a memstack chain within a local scope.
+memstack* msnew() {
+    // Allocate new memstack and the first memstack chain pointer.
+    memstack* ms = (memstack*)malloc(sizeof(memstack));
+    ms->first = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
 
-typedef struct memstack_chain_ptr_t memstack_chain_ptr;
+    // We just set everything to NULL for now.
+    ms->first->ptr = NULL;
+    ms->first->next = NULL;
 
-memstack_chain_ptr* first = { NULL };
-memstack_chain_ptr* last = NULL;
+    // Very important! We dereference ms->last in msalloc so
+    // removing this line causes undefined behaviour (probably segfault).
+    ms->last = ms->first;
 
-memstack_chain_ptr* get_item_list(memstack_chain_ptr* c){
-    if(c->next == NULL)
-        return c;
-    return get_item_list(c->next);
+    return ms;  // Return the memstack we created.
 }
 
-void msinit(){
-    first = malloc(sizeof(memstack_chain_ptr));
-    first->ptr = NULL;
-    first->next = NULL;
-    last = first;
+// Allocates a new node onto the memstack chain and allocates the space of parameter "size" for the user.
+void* msalloc(memstack* storage, int size) {
+
+    // Create new node to add to the linked list.
+    memstack_chain_ptr* new_node = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
+    new_node->ptr = malloc(size);  // Allocate space user requested.
+    new_node->next = NULL;  // This will be the last element so "next" is NULL.
+
+    // Make our new node the last node
+    storage->last->next = new_node;
+    storage->last = new_node;
+
+    return new_node->ptr;  // Return pointer to memory user wanted to be allocated.
 }
 
-void* msalloc(int size){
-    memstack_chain_ptr* p = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
-    p->ptr = malloc(size);
-    p->next = NULL;
-    memstack_chain_ptr* c = last;
-    c->next = p;
-    last = p;
-    return p->ptr;
+// Recursively frees all the nodes.
+// Totally a re-skin of free_index because I like this function but "node" sounded better to me.
+void free_node(memstack_chain_ptr* node){
+
+    // We check if the node contains one of the user's allocations and free it.
+    if(node->ptr != NULL)
+        free(node->ptr);
+
+    // We check if there's another node.
+    if(node->next != NULL)
+        free_node(node->next);  // Recursion bitch! Yeah, khhs!
+
+    free(node);  // Free the last node... RIP.
 }
 
-void free_index(memstack_chain_ptr* index){
-    if(index->ptr != NULL)
-        free(index->ptr);
-    if(index->next != NULL)
-        free_index(index->next);
-    free(index);
-}
-
-void msfree(){
-    free_index(first);
+// Frees all the nodes stored within the memstack and frees the memstack itself.
+void msfree(memstack* storage) {
+    free_node(storage->first);
+    free(storage);
 }
