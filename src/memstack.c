@@ -5,14 +5,23 @@
 // C implementation
 
 #include <memstack.h>
-#include <stdlib.h>
 
-memstack* global;
+// Global memstack can be accessed across the whole of a code base, but is hidden.
+// The global memstack cannot be accessed directly by the user, and instead they must
+// use NULL or GLOBAL_MEMSTACK to apply functions such as msalloc and msfree to
+// the global stack.
+memstack* global = NULL;
 
+// msinit() is a legacy function used specifically to initialise the global memstack.
+// if msinit() is called after the global memstack has already been initialised the
+// memstack_chain_ptr* chain will be freed and a new global memstack will be allocated.
 void msinit(){
-    if (global != NULL) {
+
+    // Check if global has already been initialised or not
+    if (global == NULL) {
         global = msnew();
     } else {
+        // If it is, we free its memory and create a new global memstack
         msfree(global);
         global = msnew();
     } 
@@ -39,8 +48,14 @@ memstack* msnew() {
 
 // Allocates a new node onto the memstack chain and allocates the space of parameter "size" for the user.
 void* msalloc(memstack* storage, int size) {
-    if(storage == NULL)
-        return msalloc(global, size);
+    if(storage == GLOBAL_MEMSTACK) {
+        if (global != NULL) {
+            return msalloc(global, size);
+        } else {
+            msinit();
+            return msalloc(global, size);
+        }
+    }
     // Create new node to add to the linked list.
     memstack_chain_ptr* new_node = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
     new_node->ptr = malloc(size);  // Allocate space user requested.
@@ -70,8 +85,13 @@ void free_node(memstack_chain_ptr* node){
 
 // Frees all the nodes stored within the memstack and frees the memstack itself.
 void msfree(memstack* storage) {
-    if(storage == NULL)
-        msfree(global);
-    free_node(storage->first);
-    free(storage);
+    if (storage == GLOBAL_MEMSTACK) {
+        if (global != NULL) {
+            free_node(global->first);
+            free(global);
+        }
+    } else {
+        free_node(storage->first);
+        free(storage);
+    }
 }
