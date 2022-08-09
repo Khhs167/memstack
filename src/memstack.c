@@ -10,7 +10,12 @@
 memstack* global;
 
 void msinit(){
-    global = msnew();
+    if (global != NULL) {
+        global = msnew();
+    } else {
+        msfree(global);
+        global = msnew();
+    } 
 }
 
 // Creates a new memstack.
