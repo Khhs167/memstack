@@ -251,7 +251,7 @@ void msprint(memstack* storage) {
 // The boolean parameter "destructive" details whether the user allocated memory (void* ptr) is freed or not.
 // If destructive is true, then everything is freed, even the user allocated memory,
 // otherwise, if destructive is false, the user allocate memory is not removed (DANGEROUS).
-void msrollback(memstack* storage, int rollback_count, bool destructive) {
+void msrollback(memstack* storage, int rollback_count, int destructive) {
 
     if (storage == GLOBAL_MEMSTACK) {
         if (global != NULL) {
