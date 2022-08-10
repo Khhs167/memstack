@@ -2,10 +2,12 @@
 A basic linked-list based tool for managing memory
 
 ## Installation
+
+It can be installed via the AUR(`yay -S libmemstack-git` i.e) or via Makefile as shown below
 ```
 sudo make install
 ```
-And to remove
+And to remove(with makefile)
 ```
 sudo make uninstall
 ```
@@ -59,12 +61,14 @@ int main(){
   // Note that unlike the above example, we pass NULL instead of a memstack, that accesses the global
   // Memstack.
   
+  // As of the latest update, GLOBAL_MEMSTACK also works.
+  
   int* a = msalloc(NULL, sizeof(int)); // Create an int pointer
   *a = 10; // Lets set it to 10
   printf("A: %i\n", *a); // Print the value(should give us "A: 10"
   inc(a); // Increase it
   printf("A: %i\n", *a); // Now it should give us "A: 11"
   
-  msfree(NULL); // Free it all. 
+  msfree(GLOBAL_MEMSTACK); // Free it all using our GLOBAL_MEMSTACK macro because cool!
 }
 ```
