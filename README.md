@@ -43,7 +43,7 @@ int main(){
 }
 ```
 
-## Legcacy example
+## Legacy example
 ```c
 // example.c
 // Compile with "gcc example.c -lmemstack -o example" and run with "./example"
