@@ -36,6 +36,7 @@ extern void msinit(); // Initializes a global memstack, that can be accessed by 
 extern memstack* msnew();  // Creates a new memstack
 extern void* msalloc(memstack* storage, int size);  // Allocate onto memstack and return pointer
 extern void msfree(memstack* storage);  // Free all of memstack
+extern void msclear(memstack* storage);  // Frees allocations but doesn't delete the memstack
 
 
 #endif

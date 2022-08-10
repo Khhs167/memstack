@@ -100,3 +100,31 @@ void msfree(memstack* storage) {
         free(storage);
     }
 }
+
+// Frees all nodes stored within the memstack but does not free the memstack itself.
+void msclear(memstack* storage) {
+
+    // Check if we're clearing global or not
+    if (storage == GLOBAL_MEMSTACK) {
+
+        // Ensure global is not NULL
+        if (global != NULL) {
+            msclear(global);  // Since global isn't NULL "storage == GLOBAL_MEMSTACK" will be false...
+        } else {
+            msinit();  // initialise global if not NULL.
+            // We don't have to clear since msinit() generates an empty global anyway.
+        }
+    } else {
+        // Free the memstack_chain_ptr* chain
+        free_node(storage->first);
+
+        // Create a new memstack_chain_ptr* chain
+        storage->first = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
+        storage->first->next = NULL;
+        storage->first->ptr = NULL;
+
+        // Set up last pointer for future allocations
+        storage->last = storage->first;
+    }
+
+}
