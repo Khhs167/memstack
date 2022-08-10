@@ -177,19 +177,24 @@ void* mspop(memstack* storage) {
             return NULL;
         }
     } else {
+        printf("Grabbed user ptr\n");
         // Store the pointer the user wants.
-        void *user_ptr = storage->last->ptr;
+        void* user_ptr = storage->last->ptr;
 
+        printf("getting node\n");
         // Get the second-to-last node that will become the new last node.
         memstack_chain_ptr *new_last = storage->last->previous;
 
+        printf("Freeing last, reseting next\n");
         // Free the last node in the memstack.
-        free(new_last->next);
+        free(storage->last);
         new_last->next = NULL;  // Ensures we do not encounter undefined behaviour on msfree() or msclear()
 
+        printf("Setting last node\n");
         // Set previously second-to-last node to the last node.
         storage->last = new_last;
 
+        printf("retr\n");
         return user_ptr;  // Give the user what they want :)
     }
 }
@@ -217,4 +222,23 @@ void msprint(memstack* storage) {
     }
     printf(" [INFO] Node count: %d\n", index);
     printf(" [INFO] Nodes are linked to both the next, and previous node\n");
+}
+
+// msrollback rolls back a memstack by removing a number of memstack_chain_ptr* nodes.
+// The number of nodes removed is described by rollback_count.
+// Nodes are removed from the last node added, to the first node added.
+// The boolean parameter "destructive" details whether the user allocated memory (void* ptr) is freed or not.
+// If destructive is true, then everything is freed, even the user allocated memory,
+// otherwise, if destructive is false, the user allocate memory is not removed (DANGEROUS).
+void msrollback(memstack* storage, int rollback_count, bool destructive) {
+
+    // Destroys "rollback_count" nodes
+    while (rollback_count > 0) {
+        // mspop() will handle freeing the latest node for us
+        void* ptr = mspop(storage);
+        if (destructive) {
+            free(ptr);  // Free user allocated memory if rollback is destructive
+        }
+        --rollback_count;
+    }
 }
