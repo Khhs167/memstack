@@ -39,6 +39,8 @@ memstack* msnew() {
     // removing this line causes undefined behaviour (probably segfault).
     ms->last = ms->first;
 
+    ms->length = 0;
+
     return ms;  // Return the memstack we created.
 }
 
@@ -70,6 +72,8 @@ void* msalloc(memstack* storage, int size) {
         storage->last->next = new_node;
         storage->last = new_node;
     }
+
+    ++storage->length;
 
     return new_node->ptr;  // Return pointer to memory user wanted to be allocated.
 }
@@ -134,6 +138,8 @@ void msclear(memstack* storage) {
 
         // Set up last pointer for future allocations
         storage->last = storage->first;
+
+        storage->length = 0;
     }
 }
 
@@ -162,6 +168,8 @@ void mspush(memstack* storage, void* ptr) {
         // Make our new node the last node
         storage->last->next = new_node;
         storage->last = new_node;
+
+        ++storage->length;
     }
 }
 
@@ -176,26 +184,27 @@ void* mspop(memstack* storage) {
         } else {
             return NULL;
         }
-    } else {
-        printf("Grabbed user ptr\n");
-        // Store the pointer the user wants.
+    } else if (storage->length < 2) {
         void* user_ptr = storage->last->ptr;
-
-        printf("getting node\n");
-        // Get the second-to-last node that will become the new last node.
-        memstack_chain_ptr *new_last = storage->last->previous;
-
-        printf("Freeing last, reseting next\n");
-        // Free the last node in the memstack.
         free(storage->last);
-        new_last->next = NULL;  // Ensures we do not encounter undefined behaviour on msfree() or msclear()
+        storage->last = NULL;
+        storage->first = NULL;
+        return user_ptr;
+    } else {
+            // Store the pointer the user wants.
+            void* user_ptr = storage->last->ptr;
 
-        printf("Setting last node\n");
-        // Set previously second-to-last node to the last node.
-        storage->last = new_last;
+            // Get the second-to-last node that will become the new last node.
+            memstack_chain_ptr *new_last = storage->last->previous;
 
-        printf("retr\n");
-        return user_ptr;  // Give the user what they want :)
+            // Free the last node in the memstack.
+            free(storage->last);
+            new_last->next = NULL;  // Ensures we do not encounter undefined behaviour on msfree() or msclear()
+
+            // Set previously second-to-last node to the last node.
+            storage->last = new_last;
+
+            return user_ptr;  // Give the user what they want :)
     }
 }
 
@@ -240,5 +249,6 @@ void msrollback(memstack* storage, int rollback_count, bool destructive) {
             free(ptr);  // Free user allocated memory if rollback is destructive
         }
         --rollback_count;
+        --storage->length;
     }
 }
