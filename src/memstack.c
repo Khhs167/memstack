@@ -253,14 +253,23 @@ void msprint(memstack* storage) {
 // otherwise, if destructive is false, the user allocate memory is not removed (DANGEROUS).
 void msrollback(memstack* storage, int rollback_count, bool destructive) {
 
-    // Destroys "rollback_count" nodes
-    while (rollback_count > 0) {
-        // mspop() will handle freeing the latest node for us
-        void* ptr = mspop(storage);
-        if (destructive) {
-            free(ptr);  // Free user allocated memory if rollback is destructive
+    if (storage == GLOBAL_MEMSTACK) {
+        if (global != NULL) {
+            msrollback(global, rollback_count, destructive);
+        } else {
+            return;
         }
-        --rollback_count;
-        --storage->length;
+    } else {
+        // Destroys "rollback_count" nodes
+        while (rollback_count > 0) {
+            // mspop() will handle freeing the latest node for us
+            void* ptr = mspop(storage);
+            if (destructive == 1) {
+                free(ptr);  // Free user allocated memory if rollback is destructive
+            }
+            --rollback_count;
+            --storage->length;
+        }
     }
+
 }
