@@ -33,12 +33,7 @@ void msinit(){
 memstack* msnew() {
     // Allocate new memstack and the first memstack chain pointer.
     memstack* ms = (memstack*)malloc(sizeof(memstack));
-    ms->first = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
-
-    // We just set everything to NULL for now.
-    ms->first->ptr = NULL;
-    ms->first->next = NULL;
-    ms->first->previous = NULL;
+    ms->first = NULL;  // There are no chain pointers yet.
 
     // Very important! We dereference ms->last in msalloc so
     // removing this line causes undefined behaviour (probably segfault).
@@ -65,9 +60,16 @@ void* msalloc(memstack* storage, int size) {
     new_node->previous = storage->last;  // Set the previous node as the current last node
     new_node->next = NULL;  // This will be the last element so "next" is NULL.
 
-    // Make our new node the last node
-    storage->last->next = new_node;
-    storage->last = new_node;
+    // Check if there is a first node
+    if (storage->first == NULL) {
+        // If not, the node we just created will become the first node.
+        storage->first = new_node;
+        storage->last = storage->first;
+    } else {
+        // If there is we just create a new last node
+        storage->last->next = new_node;
+        storage->last = new_node;
+    }
 
     return new_node->ptr;  // Return pointer to memory user wanted to be allocated.
 }
@@ -75,6 +77,10 @@ void* msalloc(memstack* storage, int size) {
 // Recursively frees all the nodes.
 // Totally a re-skin of free_index because I like this function but "node" sounded better to me.
 void free_node(memstack_chain_ptr* node){
+
+    if (node == NULL) {
+        return;
+    }
 
     // We check if the node contains one of the user's allocations and free it.
     if(node->ptr != NULL)
