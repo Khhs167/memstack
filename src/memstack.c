@@ -135,5 +135,86 @@ void msclear(memstack* storage) {
         // Set up last pointer for future allocations
         storage->last = storage->first;
     }
+}
 
+// Add a new node without allocating memory.
+// This can be used when the user wants to add previously allocated to the memstack without
+// allocating new memory through msalloc().
+void mspush(memstack* storage, void* ptr) {
+    if (storage == GLOBAL_MEMSTACK) {
+
+        // Ensure global is not NULL
+        if (global != NULL) {
+            mspush(global, ptr);
+        } else {
+            msinit();
+            mspush(global, ptr);
+        }
+    } else if (ptr == NULL) {
+        return;
+    } else {
+        // Create new node to add to the linked list.
+        memstack_chain_ptr* new_node = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
+        new_node->ptr = ptr;  // Set pointer to what ever use passed in
+        new_node->previous = storage->last;  // Set the previous node as the current last node
+        new_node->next = NULL;  // This will be the last element so "next" is NULL.
+
+        // Make our new node the last node
+        storage->last->next = new_node;
+        storage->last = new_node;
+    }
+}
+
+// Removes the last node from the memstack and returns the pointer allocated with msalloc()
+// If NULL is given, and global is not initialised, then mspop() will return NULL.
+void* mspop(memstack* storage) {
+    if (storage == GLOBAL_MEMSTACK) {
+
+        // Ensure global is not NULL.
+        if (global != NULL) {
+            return mspop(global);
+        } else {
+            return NULL;
+        }
+    } else {
+        // Store the pointer the user wants.
+        void *user_ptr = storage->last->ptr;
+
+        // Get the second-to-last node that will become the new last node.
+        memstack_chain_ptr *new_last = storage->last->previous;
+
+        // Free the last node in the memstack.
+        free(new_last->next);
+        new_last->next = NULL;  // Ensures we do not encounter undefined behaviour on msfree() or msclear()
+
+        // Set previously second-to-last node to the last node.
+        storage->last = new_last;
+
+        return user_ptr;  // Give the user what they want :)
+    }
+}
+
+// msprint loops through the linked list and shows some debug information.
+// This is useful for both maintainers, and users of memstack.
+// Originally created to help debug, I've made it available to all library users.
+// For each node, it shows the previous, next, and current memstack_chain_ptr
+void msprint(memstack* storage) {
+    memstack_chain_ptr* current_node = storage->first;
+    int index = 0;
+    printf("Printing memstack: \n");
+    while (current_node != NULL) {
+        printf(
+                " [%d] %p <--previous-- [%d] Current: %p --next--> [%d] %p\n",
+                index-1,                        /* Previous node index  */
+                current_node->previous,         /* Previous node pointer */
+                index,                          /* Current node index */
+                current_node,                   /* Current node pointer */
+                index+1,                        /* Next node index */
+                current_node->next              /* Next node pointer */
+                );
+        current_node = current_node->next;
+        ++index;
+    }
+    printf(" [INFO] Node count: %d\n", index);
+    printf(" [INFO] Nodes are linked to both the next, and previous node\n");
 }
