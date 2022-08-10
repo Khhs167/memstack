@@ -38,6 +38,7 @@ memstack* msnew() {
     // We just set everything to NULL for now.
     ms->first->ptr = NULL;
     ms->first->next = NULL;
+    ms->first->previous = NULL;
 
     // Very important! We dereference ms->last in msalloc so
     // removing this line causes undefined behaviour (probably segfault).
@@ -61,6 +62,7 @@ void* msalloc(memstack* storage, int size) {
     // Create new node to add to the linked list.
     memstack_chain_ptr* new_node = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
     new_node->ptr = malloc(size);  // Allocate space user requested.
+    new_node->previous = storage->last;  // Set the previous node as the current last node
     new_node->next = NULL;  // This will be the last element so "next" is NULL.
 
     // Make our new node the last node
@@ -121,6 +123,7 @@ void msclear(memstack* storage) {
         // Create a new memstack_chain_ptr* chain
         storage->first = (memstack_chain_ptr*)malloc(sizeof(memstack_chain_ptr));
         storage->first->next = NULL;
+        storage->first->previous = NULL;
         storage->first->ptr = NULL;
 
         // Set up last pointer for future allocations

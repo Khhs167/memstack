@@ -23,6 +23,7 @@
 typedef struct memstack_chain_ptr_t{
     void* ptr;  // Pointer to the memory allocated
     struct memstack_chain_ptr_t* next;  // Pointer to next node
+    struct memstack_chain_ptr_t* previous;  // Pointer to previous node
 } memstack_chain_ptr;
 
 // Memstack structure.
