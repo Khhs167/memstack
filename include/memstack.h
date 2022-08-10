@@ -32,6 +32,7 @@ typedef struct memstack_chain_ptr_t{
 typedef struct memstack_t {
     memstack_chain_ptr* last;  // Stores last element
     memstack_chain_ptr* first;  // Stores first element
+    int length;
 } memstack;
 
 extern void msinit(); // Initializes a global memstack, that can be accessed by passing in "NULL" as storage in the other funcs
