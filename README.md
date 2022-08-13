@@ -4,7 +4,7 @@ A linked-list based, easy to use and well documented, C library for managing mem
 ## Installation
 
 ### Build from source
-To install with Makefile, first ensure you have `make` installed, clone the git repository, change into the projects directory and run the command shown below:
+To install with Makefile, first ensure you have `make` installed, clone the git repository, change into the projects directory and run the command `sudo make install`.
 ```
 $ git clone https://github.com/Khhs167/memstack.git
 $ cd memstack
@@ -30,5 +30,5 @@ However, most people will use a [AUR client](https://wiki.archlinux.org/title/AU
 ```
 $ yay -S libmemstack-git
 ```
-*NOTE: this example uses yay*
+*NOTE: this example uses [yay](https://github.com/Jguer/yay)*
 
