@@ -32,3 +32,32 @@ $ yay -S libmemstack-git
 ```
 *NOTE: this example uses [yay](https://github.com/Jguer/yay)*
 
+## Usage
+
+### To compile using memstack
+To compile a program with the memstack library use the `-lmemstack` compiler flag like shown below.
+```sh 
+$ gcc program.c -lmemstack
+(or with clang)
+$ clang program.c -lmemstack
+```
+
+### Creating a memstack
+The memstack library has a type called `memstack*` used to keep track of allocations.
+To create a memstack, you can use the function `msnew()` as shown below.
+```c 
+#include <memstack.h>
+
+// Example C program using memstack
+int main() {
+    // We crate a new memstack using the function msnew()
+    memstack* ms = msnew(); 
+    // ... 
+    msfree(ms);  // Free the memstack
+    return 0;
+}
+```
+It's important to note that `msfree(memstack*);` will free the entire memstack (including the memstack itself).
+This means the memstack we define `ms` will no longer be usable after `msfree(ms)` is called.
+
+### Memstack functions
