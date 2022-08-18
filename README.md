@@ -220,4 +220,9 @@ int main() {
 
 
 ## Contributors
-[![](https://github.com/Khhs167/memstack/contributors.svg?width=890&button=false)](https://github.com/Khhs167/memstack/graphs/contributors)
+Contributing helps keep this library safe and up to date. 
+If you want to help, why not create an issue?
+
+<a href="https://github.com/khhs167/memstack/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=khhs167/memstack" />
+</a>
