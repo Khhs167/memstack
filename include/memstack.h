@@ -43,4 +43,5 @@ extern void mspush(memstack* storage, void* ptr);  // Adds new memory into the m
 extern void* mspop(memstack* storage);  // Removes the last node from the memstack and returns the user allocated memory
 extern void msprint(memstack* storage);  // Displays all the nodes in the memstack for debugging uses
 extern void msrollback(memstack* storage, int rollback_count, int destructive);  // Removes a number of nodes from a memstack
+extern void** msgetelements(memstack* storage, int* size); // Get the elements in a memstack in the form of an array.
 #endif
