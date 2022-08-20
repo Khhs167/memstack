@@ -273,3 +273,33 @@ void msrollback(memstack* storage, int rollback_count, int destructive) {
     }
 
 }
+
+// msgetelements is basic
+// it iterates through the storage elements, setting the value of an index in an array to the pointer of that element
+// I literally made this to be able to use memstack as a list.
+
+void** msgetelements(memstack* storage, int* size) {
+
+    if (storage == GLOBAL_MEMSTACK) {
+        return msgetelements(global, size);
+    } else {
+
+
+        void** array[storage->length];
+        int i;
+
+        memstack_chain_ptr* current = storage->first;
+        while(1){
+
+            array[i++] = current->ptr;
+
+            if(current->next == NULL)
+                break;
+        }
+
+        *size = i;
+        return array;
+
+
+    }
+}
