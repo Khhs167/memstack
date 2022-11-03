@@ -15,7 +15,7 @@
 // Before: msfree(NULL);  // Does not explicitly show global is being freed
 // After: msfree(GLOBAL_MEMSTACK);  // Does show global is being freed
 // It isn't necessary to use this however, and using NULL will also work.
-#define GLOBAL_MEMSTACK NULL
+#define GLOBAL_MEMSTACK ((memstack*)NULL)
 
 #define TRUE (1==1)
 #define FALSE (!TRUE)

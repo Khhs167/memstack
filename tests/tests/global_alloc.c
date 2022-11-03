@@ -3,16 +3,16 @@
 
 int main(){
 
-    printf("Creating memstack!\n");
-    memstack* ms = msnew();
+    printf("Creating global memstack!\n");
+    msinit();
 
-    int* ptr = (int*)msalloc(ms, sizeof(int));
+    int* ptr = (int*)msalloc(GLOBAL_MEMSTACK, sizeof(int));
     printf("ptr: %d\n", *ptr);
     printf("Setting ptr to 60\n");
     *ptr = 60;
     printf("ptr: %d\n", *ptr);
 
-    msfree(ms);
+    msfree(GLOBAL_MEMSTACK);
 
     printf("Done!");
 
