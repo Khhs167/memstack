@@ -1,39 +1,42 @@
-SRC=$(wildcard *.c)
+SRC=$(wildcard tests/*.c)
 OBJ=$(patsubst %.c,%.o,$(SRC))
 EXE=$(patsubst %.c,%.bin,$(SRC))
-TST=$(patsubst %.c,%.test,$(SRC))
+TST=$(patsubst %.bin,%.test,$(EXE))
 .PHONY: run
 
+CXX:=g++
 CC:=gcc
 LD:=gcc
 
-CFLAGS:=-I../include
+CFLAGS:=
 LDFLAGS:=
-LIBS:=
+LIBS:=-lmemstack
 $(info ${obj})
 default: all
 
-.PHONY: %.test
+$(info Remember to install memstack before testing!)
 
-libmemstack.so:
-	$(MAKE) --directory=.. all
-	mv ../libmemstack.so libmemstack.so
+testrunner:
+	$(CXX) testrunner.cc -o testrunner
 
 %.o: %.c $(HDR)
-	$(CC) -c $< $(CFLAGS) -o $@
+	@$(CC) -c $< $(CFLAGS) -o $@
 
 %.bin: %.o
-	$(LD) -o $@ $^ ${LDFLAGS} ${LIBS}
+	@$(LD) -o $@ $^ ${LDFLAGS} ${LIBS}
 
-%.test: %.bin libmemstack.so
-	./$^ >> out/$@
+%.test: %.bin testrunner
+	@export LD_LIBRARY_PATH=./
+	@./testrunner ./$<
 
 outdir:
-	mkdir -p out
+	@mkdir -p out
 
 all: outdir ${TST}
 
 clean:
+	$(RM) -f testrunner
 	$(RM) -f $(OBJ)
+	$(RM) -f libmemstack.so
 	$(RM) -f $(EXE)
-	$(RM) -f $(TST)
+	$(RM) -rf out

@@ -53,7 +53,7 @@ void* msalloc(memstack* storage, int size) {
         } else {
             // if not initialised, msalloc() now calls msinit() for the user
             msinit();
-            return msalloc(global, size);
+            return msalloc(GLOBAL_MEMSTACK, size);
         }
     }
     // Create new node to add to the linked list.
@@ -271,5 +271,39 @@ void msrollback(memstack* storage, int rollback_count, int destructive) {
             --storage->length;
         }
     }
+
+}
+
+// Free a pointer and remove it from the stack, if you want to dealloc ahead of time!
+void msdealloc(memstack* storage, void* memory) {
+
+  if(memory == NULL)
+    return;
+
+  if (storage == GLOBAL_MEMSTACK) {
+    if (global != NULL) {
+      msdealloc(global, memory);
+    } else {
+      return;
+    }
+  }
+
+  memstack_chain_ptr* c = storage->first;
+  
+  while(c->ptr != memory) {
+    if(c->next == NULL)
+      return;
+
+    c = c->next;
+  }
+
+  if(c->next != NULL)
+    c->next->previous = c->previous;
+  
+  if(c->previous != NULL)
+    c->previous->next = c->next;
+
+  free(c);
+  free(memory);
 
 }
