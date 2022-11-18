@@ -6,6 +6,10 @@
 
 #include <memstack.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 // Global memstack can be accessed across the whole of a code base, but is hidden.
 // The global memstack cannot be accessed directly by the user, and instead they must
 // use NULL or GLOBAL_MEMSTACK to apply functions such as msalloc and msfree to

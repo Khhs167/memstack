@@ -4,11 +4,10 @@
 
 // Header file
 
-#ifndef MC_MEMSTACK_H
-#define MC_MEMSTACK_H
-
-#include <stdlib.h>
 #include <stdio.h>
+
+#ifndef __MC_MEMSTACK_H_
+#define __MC_MEMSTACK_H_
 
 // C macro to improve readability when using the library.
 // Example:
@@ -17,13 +16,10 @@
 // It isn't necessary to use this however, and using NULL will also work.
 #define GLOBAL_MEMSTACK ((memstack*)NULL)
 
-#define TRUE (1==1)
-#define FALSE (!TRUE)
-
 // Linked list node.
 // Stores a ptr to the memory allocated and the next element in the linked list.
 // If *next* is NULL then that node is the last node in the linked list.
-typedef struct memstack_chain_ptr_t{
+typedef struct memstack_chain_ptr_t {
     void* ptr;  // Pointer to the memory allocated
     struct memstack_chain_ptr_t* next;  // Pointer to next node
     struct memstack_chain_ptr_t* previous;  // Pointer to previous node
@@ -31,7 +27,7 @@ typedef struct memstack_chain_ptr_t{
 
 // Memstack structure.
 // Stores the linked list for all of our allocations.
-typedef struct memstack_t {
+typedef struct {
     memstack_chain_ptr* last;  // Stores last element
     memstack_chain_ptr* first;  // Stores first element
     int length;
@@ -47,4 +43,5 @@ extern void* mspop(memstack* storage);  // Removes the last node from the memsta
 extern void msprint(memstack* storage);  // Displays all the nodes in the memstack for debugging uses
 extern void msrollback(memstack* storage, int rollback_count, int destructive);  // Removes a number of nodes from a memstack
 extern void msdealloc(memstack* storage, void* ptr); // Deallocate a piece of memory and remove it from the stack
-#endif
+
+#endif /* __MC_MEMSTACK_H_ */
