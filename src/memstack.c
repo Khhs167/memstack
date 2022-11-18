@@ -217,23 +217,22 @@ void* mspop(memstack* storage) {
 // This is useful for both maintainers, and users of memstack.
 // Originally created to help debug, I've made it available to all library users.
 // For each node, it shows the previous, next, and current memstack_chain_ptr
-void msprint(memstack* storage) {
+void _msprint(memstack* storage, FILE* stream) {
 
     // To handle global memstack
     if (storage == GLOBAL_MEMSTACK) {
-        if (global != NULL) {
-            msprint(global);
-        } else {
+        if (global == NULL)
             msinit();  // Allocate for the user if needs be
-            msprint(global);
-        }
+
+        msprint(global, stream);
     } else {
         memstack_chain_ptr* current_node = storage->first;
         int index = 0;
-        printf("Printing memstack: \n");
+        fprintf(stream, "Printing memstack: \n");
         while (current_node != NULL) {
-            printf(
-                    " [%d] %p <--previous-- [%d] Current: %p --next--> [%d] %p\n",
+            fprintf(
+                stream,
+                " [%d] %p <--previous-- [%d] Current: %p --next--> [%d] %p\n",
                     index-1,                        /* Previous node index  */
                     current_node->previous,         /* Previous node pointer */
                     index,                          /* Current node index */
@@ -244,8 +243,9 @@ void msprint(memstack* storage) {
             current_node = current_node->next;
             ++index;
         }
-        printf(" [INFO] Node count: %d\n", index);
-        printf(" [INFO] Nodes are linked to both the next, and previous node\n");
+        fprintf(stream, " [INFO] Node count: %d\n", index);
+        fprintf(stream, " [INFO] Nodes are linked to both the next, and previous node\n");
+        fflush(stream);
     }
 }
 
