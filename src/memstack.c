@@ -8,7 +8,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 
 // Global memstack can be accessed across the whole of a code base, but is hidden.
 // The global memstack cannot be accessed directly by the user, and instead they must
@@ -217,14 +216,14 @@ void* mspop(memstack* storage) {
 // This is useful for both maintainers, and users of memstack.
 // Originally created to help debug, I've made it available to all library users.
 // For each node, it shows the previous, next, and current memstack_chain_ptr
-void _msprint(memstack* storage, FILE* stream) {
+void msfprint(memstack* storage, FILE* stream) {
 
     // To handle global memstack
     if (storage == GLOBAL_MEMSTACK) {
         if (global == NULL)
             msinit();  // Allocate for the user if needs be
 
-        msprint(global, stream);
+        msfprint(global, stream);
     } else {
         memstack_chain_ptr* current_node = storage->first;
         int index = 0;
@@ -248,6 +247,15 @@ void _msprint(memstack* storage, FILE* stream) {
         fflush(stream);
     }
 }
+
+// msprint loops through the linked list and shows some debug information.
+// This is useful for both maintainers, and users of memstack.
+// Originally created to help debug, I've made it available to all library users.
+// For each node, it shows the previous, next, and current memstack_chain_ptr
+extern void msprint(memstack* storage) {
+    msfprint(storage, stdout);
+}
+
 
 // msrollback rolls back a memstack by removing a number of memstack_chain_ptr* nodes.
 // The number of nodes removed is described by rollback_count.

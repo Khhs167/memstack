@@ -42,20 +42,7 @@ extern void mspush(memstack* storage, void* ptr);  // Adds new memory into the m
 extern void* mspop(memstack* storage);  // Removes the last node from the memstack and returns the user allocated memory
 extern void msrollback(memstack* storage, int rollback_count, int destructive);  // Removes a number of nodes from a memstack
 extern void msdealloc(memstack* storage, void* ptr); // Deallocate a piece of memory and remove it from the stack
-extern void _msprint(memstack* storage, FILE* stream);  // Displays all the nodes in the memstack for debugging uses
-
-#define __MS_MSPRINT_C1(a) _msprint(a, stdout);
-#define __MS_MSPRINT_C2(a,b) _msprint(a, b);
-
-#define _ARG2(_0, _1, _2, ...) _2
-#define NARG2(...) _ARG2(__VA_ARGS__, 2, 1, 0)
-
-#define __MS_ONE_OR_TWO_ARGS_1(a) __MS_MSPRINT_C1(a)
-#define __MS_ONE_OR_TWO_ARGS_2(a, b) __MS_MSPRINT_C2(a,b)
-
-#define __MS_ONE_OR_TWO_ARGS__(N, ...) __MS_ONE_OR_TWO_ARGS_ ## N (__VA_ARGS__)
-#define __MS_ONE_OR_TWO_ARGS_(N, ...) __MS_ONE_OR_TWO_ARGS__(N, __VA_ARGS__)
-
-#define msprint(...) __MS_ONE_OR_TWO_ARGS_(NARG2(__VA_ARGS__), __VA_ARGS__)
+extern void msfprint(memstack* storage, FILE* stream);  // Displays all the nodes in the memstack for debugging uses
+extern void msprint(memstack* storage);  // Displays all the nodes in the memstack for debugging uses
 
 #endif /* __MC_MEMSTACK_H_ */
