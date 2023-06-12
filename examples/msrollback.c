@@ -1,6 +1,5 @@
 #include <memstack.h>
 #include <stdio.h>
-#include <stdbool.h>
 
 int main(void) {
     printf("Running example \"msrollback\"!\n");
@@ -18,8 +17,8 @@ int main(void) {
 
     // msrollback can be used to remove, and destroy, multiple allocations from the memstack.
     // Below, we destroy "c" and "d", and remove "a" and "b".
-    msrollback(example_memstack, 2, true);  // Destroy last two nodes
-    msrollback(example_memstack, 2, false);  // Remove last two nodes
+    msrollback(example_memstack, 2, TRUE);  // Destroy last two nodes
+    msrollback(example_memstack, 2, FALSE);  // Remove last two nodes
 
     // We have to handle "a", and "b", ourself.
     free(a);
