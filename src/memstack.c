@@ -6,6 +6,9 @@
 
 #include <memstack.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+
 // Global memstack can be accessed across the whole of a code base, but is hidden.
 // The global memstack cannot be accessed directly by the user, and instead they must
 // use NULL or GLOBAL_MEMSTACK to apply functions such as msalloc and msfree to
@@ -213,23 +216,22 @@ void* mspop(memstack* storage) {
 // This is useful for both maintainers, and users of memstack.
 // Originally created to help debug, I've made it available to all library users.
 // For each node, it shows the previous, next, and current memstack_chain_ptr
-void msprint(memstack* storage) {
+void msfprint(memstack* storage, FILE* stream) {
 
     // To handle global memstack
     if (storage == GLOBAL_MEMSTACK) {
-        if (global != NULL) {
-            msprint(global);
-        } else {
+        if (global == NULL)
             msinit();  // Allocate for the user if needs be
-            msprint(global);
-        }
+
+        msfprint(global, stream);
     } else {
         memstack_chain_ptr* current_node = storage->first;
         int index = 0;
-        printf("Printing memstack: \n");
+        fprintf(stream, "Printing memstack: \n");
         while (current_node != NULL) {
-            printf(
-                    " [%d] %p <--previous-- [%d] Current: %p --next--> [%d] %p\n",
+            fprintf(
+                stream,
+                " [%d] %p <--previous-- [%d] Current: %p --next--> [%d] %p\n",
                     index-1,                        /* Previous node index  */
                     current_node->previous,         /* Previous node pointer */
                     index,                          /* Current node index */
@@ -240,10 +242,20 @@ void msprint(memstack* storage) {
             current_node = current_node->next;
             ++index;
         }
-        printf(" [INFO] Node count: %d\n", index);
-        printf(" [INFO] Nodes are linked to both the next, and previous node\n");
+        fprintf(stream, " [INFO] Node count: %d\n", index);
+        fprintf(stream, " [INFO] Nodes are linked to both the next, and previous node\n");
+        fflush(stream);
     }
 }
+
+// msprint loops through the linked list and shows some debug information.
+// This is useful for both maintainers, and users of memstack.
+// Originally created to help debug, I've made it available to all library users.
+// For each node, it shows the previous, next, and current memstack_chain_ptr
+extern void msprint(memstack* storage) {
+    msfprint(storage, stdout);
+}
+
 
 // msrollback rolls back a memstack by removing a number of memstack_chain_ptr* nodes.
 // The number of nodes removed is described by rollback_count.
