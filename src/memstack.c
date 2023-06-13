@@ -15,18 +15,25 @@
 // the global stack.
 memstack* global = NULL;
 
+// Set to 0 if global is not initialized, and 1 if it is.
+// Checking for a NULL global is great and all, but the moment we free global
+// it breaks.
+static int __global_init = 0;
+
 // msinit() is a legacy function used specifically to initialise the global memstack.
 // if msinit() is called after the global memstack has already been initialised the
 // memstack_chain_ptr* chain will be freed and a new global memstack will be allocated.
 void msinit(){
 
     // Check if global has already been initialised or not
-    if (global == NULL) {
+    if (__global_init) {
         global = msnew();
+        __global_init = 1;
     } else {
         // If it is, we free its memory and create a new global memstack
         msfree(global);
         global = msnew();
+        __global_init = 1;
     } 
 }
 
@@ -51,7 +58,7 @@ memstack* msnew() {
 void* msalloc(memstack* storage, int size) {
     if(storage == GLOBAL_MEMSTACK) {
         // Ensure global is initialised before allocating
-        if (global != NULL) {
+        if (__global_init) {
             return msalloc(global, size);
         } else {
             // if not initialised, msalloc() now calls msinit() for the user
@@ -103,11 +110,12 @@ void free_node(memstack_chain_ptr* node){
 // Frees all the nodes stored within the memstack and frees the memstack itself.
 void msfree(memstack* storage) {
     if (storage == GLOBAL_MEMSTACK) {
-        // Ensure global is not NULL before freeing
-        // This is because we dereference global (so we don't want it to be NULL)
-        if (global != NULL) {
+        // Ensure global is initialized first
+        // This is because we dereference global (so we don't want it to be unallocated memory)
+        if (__global_init) {
             free_node(global->first);
             free(global);
+            __global_init = 0;
         }
     } else {
         // If it's not NULL we can free it normally
@@ -121,9 +129,8 @@ void msclear(memstack* storage) {
 
     // Check if we're clearing global or not
     if (storage == GLOBAL_MEMSTACK) {
-
         // Ensure global is not NULL
-        if (global != NULL) {
+        if (__global_init) {
             msclear(global);  // Since global isn't NULL "storage == GLOBAL_MEMSTACK" will be false...
         } else {
             msinit();  // initialise global if not NULL.
@@ -232,7 +239,7 @@ void msfprint(memstack* storage, FILE* stream) {
 
     // To handle global memstack
     if (storage == GLOBAL_MEMSTACK) {
-        if (global == NULL)
+        if (__global_init)
             msinit();  // Allocate for the user if needs be
 
         msfprint(global, stream);
@@ -340,4 +347,3 @@ static void msexit() {
 }
 
 #endif
-
