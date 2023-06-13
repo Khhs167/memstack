@@ -331,8 +331,12 @@ void msdealloc(memstack* storage, void* memory) {
 
 }
 
+#ifdef MSCLEANUP
+
 __attribute__((destructor)) 
 static void msexit() {
 	msfree(GLOBAL_MEMSTACK);
 }
+
+#endif
 
