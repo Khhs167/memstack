@@ -21,6 +21,6 @@ jobs:
         name: libmemstack.so
         path: libmemstack.so
     - name: Install memstack
-      run: make install
+      run: sudo make install
     - name: Run tests
       run: cd tests && make runall
