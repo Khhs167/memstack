@@ -20,3 +20,7 @@ jobs:
       with:
         name: libmemstack.so
         path: libmemstack.so
+    - name: Install memstack
+      run: make install
+    - name: Run tests
+      run: cd tests && make runall
