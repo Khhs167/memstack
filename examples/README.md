@@ -2,7 +2,8 @@
 This directory contains many complete program examples to help understand how memstack works, and how to use memstack effectively.
 Every example is commented and can be compiled using the command below.
 ```sh 
-$ gcc <example-name>.c -lmemstack -o example && ./example
+$ gcc <example-name>.c -lmemstack -o example && ./example && rm -rf example # Build, run and then delete the example
+$ gcc <example-name>.c -lmemstack -o <example-name>.bin # Build the example, the .bin is a naming thing
 ```
 You can also use the build script provided. 
 The build script allows you to use `./build.sh` to build, run, and clean a given example.
@@ -11,9 +12,10 @@ $ ./build.sh msnew
 ```
 On top of this, there's also the Makefile, written for GNUmake, but it should hopefully work on other Make versions.
 ```sh
-make <example-name>       # Build the example
+make <example-name>.bin   # Build the example
 make <example-name>.run   # Build and run the example
 ```
+The reasoning for the `.bin` is simply for .gitignore easiness.
 
 Each example has its own C file within the `memstack/example` folder.
 There are also example that use the `global` memstack over a user created one.

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 int main(void) {
-    printf("Running example \"msalloc\"!\n");
+    printf("Running example \"mspop\"!\n");
 
     // Creating the memstack.
     // See msnew.c example
