@@ -32,14 +32,17 @@ int main(int argc, char** argv){
   FILE *of;
 
   of = fopen(path.c_str(), "w");
-
-  while (fgets(out, sizeof(out), fp) != NULL) {
-    fprintf(of, "%s", out);
+	
+  char c;
+  while ((c = fgetc(fp)) != -1) {
+    fputc(c, of);
   }
 
   fclose(of);
 
-  int exit_code = WEXITSTATUS(pclose(fp));
+  int exit_code = pclose(fp);
+  
+  printf("(%d)\t", exit_code);
   
   if(exit_code != 0){
     printf("[FAIL]\n");
