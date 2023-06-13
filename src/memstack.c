@@ -176,7 +176,7 @@ void mspush(memstack* storage, void* ptr) {
         // TODO: Check if this needs to be done elsewhere
         if(storage->first != NULL) {
         	storage->last->next = new_node;
-		      new_node->previous = storage->last;
+		new_node->previous = storage->last;
         	storage->last = new_node;
 
         } else {
