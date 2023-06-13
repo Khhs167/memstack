@@ -1,5 +1,6 @@
 #include <memstack.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(void) {
     printf("Running example \"msrollback\"!\n");
