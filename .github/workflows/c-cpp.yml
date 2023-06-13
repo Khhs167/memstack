@@ -23,4 +23,4 @@ jobs:
     - name: Install memstack
       run: sudo make install
     - name: Run tests
-      run: cd tests && make runall
+      run: cd tests && make all
