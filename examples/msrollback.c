@@ -17,8 +17,8 @@ int main(void) {
 
     // msrollback can be used to remove, and destroy, multiple allocations from the memstack.
     // Below, we destroy "c" and "d", and remove "a" and "b".
-    msrollback(example_memstack, 2, TRUE);  // Destroy last two nodes
-    msrollback(example_memstack, 2, FALSE);  // Remove last two nodes
+    msrollback(example_memstack, 2, MSTRUE);  // Destroy last two nodes
+    msrollback(example_memstack, 2, MSFALSE);  // Remove last two nodes
 
     // We have to handle "a", and "b", ourself.
     free(a);
