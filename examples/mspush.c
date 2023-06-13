@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 int main(void) {
-    printf("Running example \"mspop\"!\n");
+    printf("Running example \"mspush\"!\n");
 
     // Creating the memstack.
     // See msnew.c example
