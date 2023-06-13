@@ -9,6 +9,11 @@ The build script allows you to use `./build.sh` to build, run, and clean a given
 ```sh 
 $ ./build.sh msnew 
 ```
+On top of this, there's also the Makefile, written for GNUmake, but it should hopefully work on other Make versions.
+```sh
+make <example-name>       # Build the example
+make <example-name>.run   # Build and run the example
+```
 
 Each example has its own C file within the `memstack/example` folder.
 There are also example that use the `global` memstack over a user created one.
