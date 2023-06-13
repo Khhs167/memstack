@@ -17,7 +17,7 @@
 #define GLOBAL_MEMSTACK ((memstack*)NULL)
 
 #define MSTRUE (1==1)
-#define MSFALSE (!TRUE)
+#define MSFALSE (!MSTRUE)
 
 // Linked list node.
 // Stores a ptr to the memory allocated and the next element in the linked list.

@@ -167,10 +167,20 @@ void mspush(memstack* storage, void* ptr) {
         new_node->ptr = ptr;  // Set pointer to what ever use passed in
         new_node->previous = storage->last;  // Set the previous node as the current last node
         new_node->next = NULL;  // This will be the last element so "next" is NULL.
-
+	
         // Make our new node the last node
-        storage->last->next = new_node;
-        storage->last = new_node;
+        
+        // If we don't have any nodes on the memstack, we'll get a segfault as we try to index a null pointer.
+        // This *should* avoid that by assigning this node as first if no first node exists.
+        
+        // TODO: Check if this needs to be done elsewhere
+        if(storage->first != NULL) {
+        	storage->last->next = new_node;
+        	storage->last = new_node;
+        } else {
+        	storage->first = new_node;
+        	storage->last = storage->first;
+        }
 
         ++storage->length;
     }
