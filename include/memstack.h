@@ -19,6 +19,17 @@
 #define MSTRUE (1==1)
 #define MSFALSE (!MSTRUE)
 
+// Certain compilers support destructors, which are pieces of code invoked at the end of a programs lifetime.
+// Now, because this doesn't apply to all compilers, we have the MSCLEANUP definition.
+// This is defined for GCC, clang, and ICC, since those all support destructors.
+// The intended use-case is just so that you can know whether or not the global stack will be automatically
+// cleaned on your system, provided you compile memstack and the program with THE SAME COMPILER.
+#if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER)
+#define MSCLEANUP
+#else
+#warning Memstack global cleanup is not available for your compiler, make sure you clean it up yourself
+#endif
+
 // Linked list node.
 // Stores a ptr to the memory allocated and the next element in the linked list.
 // If *next* is NULL then that node is the last node in the linked list.
