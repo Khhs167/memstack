@@ -17,7 +17,7 @@ default: all
 $(info Remember to install memstack before testing!)
 
 testrunner:
-	$(CXX) testrunner.cc -o testrunner
+	@$(CXX) testrunner.cc -o testrunner
 
 %.o: %.c $(HDR)
 	@$(CC) -c $< $(CFLAGS) -o $@
@@ -26,7 +26,6 @@ testrunner:
 	@$(LD) -o $@ $^ ${LDFLAGS} ${LIBS}
 
 %.test: %.bin testrunner
-	@export LD_LIBRARY_PATH=./
 	@./testrunner ./$<
 
 outdir:

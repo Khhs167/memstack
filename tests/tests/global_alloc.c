@@ -11,10 +11,8 @@ int main(){
     printf("Setting ptr to 60\n");
     *ptr = 60;
     printf("ptr: %d\n", *ptr);
-
-    msfree(GLOBAL_MEMSTACK);
-
-    printf("Done!");
+    
+    printf("Done!\n");
 
     return 0;
 }
