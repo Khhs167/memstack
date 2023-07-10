@@ -15,6 +15,9 @@
 // the global stack.
 memstack* global = NULL;
 
+// Set to 0 if global is not initialized, and 1 if it is.
+// Checking for a NULL global is great and all, but the moment we free global
+// it breaks.
 static int __global_init = 0;
 
 // msinit() is a legacy function used specifically to initialise the global memstack.
@@ -344,4 +347,3 @@ static void msexit() {
 }
 
 #endif
-
