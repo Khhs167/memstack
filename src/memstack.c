@@ -23,7 +23,7 @@ static int __global_init = 0;
 // msinit() is a legacy function used specifically to initialise the global memstack.
 // if msinit() is called after the global memstack has already been initialised the
 // memstack_chain_ptr* chain will be freed and a new global memstack will be allocated.
-void msinit(){
+void msinit() {
 
     // Check if global has already been initialised or not
     if (__global_init) {

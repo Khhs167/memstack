@@ -19,6 +19,7 @@
 #define MSTRUE (1==1)
 #define MSFALSE (!MSTRUE)
 
+
 // Certain compilers support destructors, which are pieces of code invoked at the end of a programs lifetime.
 // Now, because this doesn't apply to all compilers, we have the MSCLEANUP definition.
 // This is defined for GCC, clang, and ICC, since those all support destructors.
@@ -28,6 +29,12 @@
 #define MSCLEANUP
 #else
 #warning Memstack global cleanup is not available for your compiler, make sure you clean it up yourself
+#endif
+
+#ifndef MSCLEANUP
+#define MSCLEAN { msfree(GLOBAL_MEMSTACK); }
+#else
+#define MSCLEAN { }
 #endif
 
 // Linked list node.

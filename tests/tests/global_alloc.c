@@ -13,6 +13,8 @@ int main(){
     printf("ptr: %d\n", *ptr);
     
     printf("Done!\n");
+    
+    msfree(NULL);
 
     return 0;
 }
