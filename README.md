@@ -226,3 +226,5 @@ If you want to help, why not create an issue?
 <a href="https://github.com/khhs167/memstack/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=khhs167/memstack" />
 </a>
+
+*If you find the same library elsewhere(maybe even with the same name), that's just because it's not an original idea.*
