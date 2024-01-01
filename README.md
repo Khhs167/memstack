@@ -1,6 +1,8 @@
 # memstack
 A linked-list based, easy to use and well documented, C library for managing memory in your programs.
 
+*Disclaimer: The aim of this project, and it's name, already exist as other repositories, but the contents of this repository are original and the work of several contributors.*
+
 ## Installation
 
 ### Build from source
@@ -226,3 +228,5 @@ If you want to help, why not create an issue?
 <a href="https://github.com/khhs167/memstack/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=khhs167/memstack" />
 </a>
+
+*If you find the same library elsewhere(maybe even with the same name), that's just because it's not an original idea.*
