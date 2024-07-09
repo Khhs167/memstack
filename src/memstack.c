@@ -55,7 +55,7 @@ memstack* msnew() {
 }
 
 // Allocates a new node onto the memstack chain and allocates the space of parameter "size" for the user.
-void* msalloc(memstack* storage, int size) {
+void* msalloc(memstack* storage, size_t size) {
     if(storage == GLOBAL_MEMSTACK) {
         // Ensure global is initialised before allocating
         if (__global_init) {
